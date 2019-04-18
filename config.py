@@ -10,8 +10,8 @@
 #----------------------------------------------------------------------------
 # Paths.
 
-result_dir = 'results'
-data_dir = 'datasets'
+result_dir = '/media/hd1/projects/stylegan/ffhq-256/exp001'
+data_dir = '/media/hd1/data/ffhq/tfrecords'
 cache_dir = 'cache'
 run_dir_ignore = ['results', 'datasets', 'cache']
 

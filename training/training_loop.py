@@ -14,7 +14,7 @@ import dnnlib
 import dnnlib.tflib as tflib
 from dnnlib.tflib.autosummary import autosummary
 
-import config
+# import config
 import train
 from training import dataset
 from training import misc
@@ -117,6 +117,7 @@ def training_loop(
     D_opt_args              = {},       # Options for discriminator optimizer.
     G_loss_args             = {},       # Options for generator loss.
     D_loss_args             = {},       # Options for discriminator loss.
+    data_root_dir           = None,
     dataset_args            = {},       # Options for dataset.load_dataset().
     sched_args              = {},       # Options for train.TrainingSchedule.
     grid_args               = {},       # Options for train.setup_snapshot_image_grid().
@@ -139,16 +140,19 @@ def training_loop(
     resume_time             = 0.0):     # Assumed wallclock time at the beginning. Affects reporting.
 
     # Initialize dnnlib and TensorFlow.
-    ctx = dnnlib.RunContext(submit_config, train)
+    ctx = dnnlib.RunContext(submit_config)
     tflib.init_tf(tf_config)
 
     # Load training set.
-    training_set = dataset.load_dataset(data_dir=config.data_dir, verbose=True, **dataset_args)
+    training_set = dataset.load_dataset(data_dir=data_root_dir, verbose=True, **dataset_args)
 
     # Construct networks.
     with tf.device('/gpu:0'):
         if resume_run_id is not None:
-            network_pkl = misc.locate_network_pkl(resume_run_id, resume_snapshot)
+            if resume_run_id == 'latest':
+                network_pkl, resume_kimg = misc.locate_latest_pkl()
+            else:
+                network_pkl = misc.locate_network_pkl(resume_run_id, resume_snapshot)
             print('Loading networks from "%s"...' % network_pkl)
             G, D, Gs = misc.load_pkl(network_pkl)
         else:
