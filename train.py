@@ -36,7 +36,7 @@ def get_args():
     parser.add_argument('--n_gpus', type=int, default=1)
     parser.add_argument('--total_kimg', type=int, default=25000)
     parser.add_argument('--resume_run_id',
-                        default='latest',
+                        default=None, #'latest',
                         help='Run ID or network pkl to resume training from, None = start from scratch.')
     parser.add_argument('--resume_snapshot',
                         default=None,
